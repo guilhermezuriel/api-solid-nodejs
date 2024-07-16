@@ -20,6 +20,8 @@ export class RegisterUseCase {
       throw new UserAlreadyExistsError();
     }
 
-    this.usersRepository.create({ name, email, password_hash });
+    const user = this.usersRepository.create({ name, email, password_hash });
+
+    return { user };
   }
 }
