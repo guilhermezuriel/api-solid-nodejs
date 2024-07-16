@@ -1,37 +1,60 @@
-import { expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { RegisterUseCase } from './register';
 import { compare } from 'bcryptjs';
+import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository';
+import { UserAlreadyExistsError } from '@/errors/user-already-exists';
 
-test('Register Use Case', async () => {
-  //It is important to maintain the performance on unit tests
-  const registerUseCase = new RegisterUseCase({
-    async findByEmail(email) {
-      return null;
-    },
+describe('Register User Case', () => {
+  it('Should be able to register a user', async () => {
+    const UsersRepository = new InMemoryUsersRepository();
+    const registerUseCase = new RegisterUseCase(UsersRepository);
 
-    async create(data) {
-      return {
-        id: 'user',
-        name: data.name,
-        email: data.email,
-        password_hash: data.password_hash,
-        createdAt: new Date(),
-      };
-    },
+    const { user } = await registerUseCase.execute({
+      name: 'John Node',
+      email: 'johnnode@example.com',
+      password: '123456',
+    });
+
+    expect((await user).id).toEqual(expect.any(String));
   });
 
-  const { user } = await registerUseCase.execute({
-    name: 'John Node',
-    email: 'johnnode@example.com',
-    password: '123456',
+  it('Should hash user password upon registration', async () => {
+    //It is important to maintain the performance on unit tests
+    const UsersRepository = new InMemoryUsersRepository();
+    const registerUseCase = new RegisterUseCase(UsersRepository);
+
+    const { user } = await registerUseCase.execute({
+      name: 'John Node',
+      email: 'johnnode@example.com',
+      password: '123456',
+    });
+    const isPasswordCorrectlyHashed = await compare(
+      '123456',
+      (
+        await user
+      ).password_hash,
+    );
+    expect(isPasswordCorrectlyHashed).toBe(true);
   });
 
-  const isPasswordCorrectlyHashed = await compare(
-    '123456',
-    (
-      await user
-    ).password_hash,
-  );
+  it('Should not be able to register with the same email twice', async () => {
+    const UsersRepository = new InMemoryUsersRepository();
+    const registerUseCase = new RegisterUseCase(UsersRepository);
 
-  expect(isPasswordCorrectlyHashed).toBe(true);
+    const email = 'JohnNode@example.com';
+
+    await registerUseCase.execute({
+      name: 'John Node',
+      email,
+      password: '123456',
+    });
+
+    expect(() =>
+      registerUseCase.execute({
+        name: 'John Node',
+        email,
+        password: '123456',
+      }),
+    ).rejects.toBeInstanceOf(UserAlreadyExistsError);
+  });
 });
