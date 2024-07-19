@@ -5,7 +5,10 @@ import { UserAlreadyExistsError } from '@/errors/user-already-exists';
 import { AuthenticationUseCase } from '@/use-cases/users/authenticate';
 import { InvalidCredentialsError } from '@/errors/invalid-credentials';
 
-export async function register(request: FastifyRequest, reply: FastifyReply) {
+export async function authenticate(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
   const authenticateBodySchema = z.object({
     email: z.string().email(),
     password: z.string().min(6),
