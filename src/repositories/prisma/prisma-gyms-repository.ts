@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Gym } from '@prisma/client';
 
 export class PrismaGymsRepository {
   async create(data: Prisma.GymCreateInput) {
