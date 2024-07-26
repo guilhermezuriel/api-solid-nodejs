@@ -33,12 +33,11 @@ describe('CheckIn Use Case', () => {
       gymId: 'gym-1',
     });
 
-    expect(
-      async () =>
-        await sut.execute({
-          userId: 'user-1',
-          gymId: 'gym-1',
-        }),
+    await expect(() =>
+      sut.execute({
+        userId: 'user-1',
+        gymId: 'gym-1',
+      }),
     ).rejects.toBeInstanceOf(Error);
   });
 });
