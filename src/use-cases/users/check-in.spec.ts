@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { InMemoryCheckInRepository } from '@/repositories/in-memory/in-memory-checkins-repository';
 import { CheckInUseCase } from './check-in';
 import { randomUUID } from 'crypto';
@@ -10,6 +10,11 @@ describe('CheckIn Use Case', () => {
   beforeEach(() => {
     checkInRepository = new InMemoryCheckInRepository();
     sut = new CheckInUseCase(checkInRepository);
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useFakeTimers();
   });
 
   it('Should be able to checkIn', async () => {
@@ -19,5 +24,21 @@ describe('CheckIn Use Case', () => {
     });
 
     expect(checkIn.id).toEqual(expect.any(String));
+  });
+  it('Should not be able to checkin in twice in the same day', async () => {
+    vi.setSystemTime(new Date(2022, 0, 20, 8, 0, 0));
+
+    await sut.execute({
+      userId: 'user-1',
+      gymId: 'gym-1',
+    });
+
+    expect(
+      async () =>
+        await sut.execute({
+          userId: 'user-1',
+          gymId: 'gym-1',
+        }),
+    ).rejects.toBeInstanceOf(Error);
   });
 });
