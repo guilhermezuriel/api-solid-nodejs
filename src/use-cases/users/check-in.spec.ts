@@ -15,13 +15,7 @@ describe('CheckIn Use Case', () => {
     gymsRepository = new InMemoryGymsRepository();
     sut = new CheckInUseCase(checkInRepository, gymsRepository);
     vi.useFakeTimers();
-  });
 
-  afterEach(() => {
-    vi.useFakeTimers();
-  });
-
-  it('Should be able to checkIn', async () => {
     gymsRepository.items.push({
       id: 'gym-1',
       title: 'Javascript Gym',
@@ -30,10 +24,16 @@ describe('CheckIn Use Case', () => {
       latitude: new Decimal(0),
       longitude: new Decimal(0),
     });
+  });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('Should be able to checkIn', async () => {
     const { checkIn } = await sut.execute({
-      userId: randomUUID(),
-      gymId: randomUUID(),
+      userId: 'user-1',
+      gymId: 'gym-1',
       userLatitude: 10000000,
       userLongitude: 10000000,
     });

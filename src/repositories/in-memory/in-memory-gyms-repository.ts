@@ -4,8 +4,12 @@ import { randomUUID } from 'node:crypto';
 import { GymsRepository } from '../gyms-repository';
 
 export class InMemoryGymsRepository implements GymsRepository {
-  findById(id: string): Promise<Gym | null> {
-    throw new Error('Method not implemented.');
+  async findById(id: string): Promise<Gym | null> {
+    const gymId = this.items.find((item) => item.id === id);
+    if (!gymId) {
+      return null;
+    }
+    return gymId;
   }
   public items: Gym[] = [];
 }
