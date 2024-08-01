@@ -21,8 +21,8 @@ describe('CheckIn Use Case', () => {
       title: 'Javascript Gym',
       description: '',
       phone: '1200323',
-      latitude: new Decimal(0),
-      longitude: new Decimal(0),
+      latitude: new Decimal(10000000),
+      longitude: new Decimal(10000000),
     });
   });
 
@@ -56,6 +56,25 @@ describe('CheckIn Use Case', () => {
         gymId: 'gym-1',
         userLatitude: 10000000,
         userLongitude: 1000000,
+      }),
+    ).rejects.toBeInstanceOf(Error);
+  });
+  it('Should not be able to check in on distant gym', async () => {
+    gymsRepository.items.push({
+      id: 'gym-2',
+      title: 'Javascript Gym',
+      description: '',
+      phone: '1200323',
+      latitude: new Decimal(-10.8948882),
+      longitude: new Decimal(-37.0639347),
+    });
+
+    await expect(() =>
+      sut.execute({
+        userId: 'user-1',
+        gymId: 'gym-2',
+        userLatitude: -10.8386292,
+        userLongitude: -37.0781844,
       }),
     ).rejects.toBeInstanceOf(Error);
   });
