@@ -1,10 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { compare } from 'bcryptjs';
-import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository';
-import { UserAlreadyExistsError } from '@/errors/user-already-exists';
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository';
 import { CreateGymUseCase } from './create-gym';
-import { Decimal } from '@prisma/client/runtime/library';
 
 let gymsRepository: InMemoryGymsRepository;
 let sut: CreateGymUseCase;

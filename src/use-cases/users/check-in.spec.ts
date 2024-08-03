@@ -10,20 +10,21 @@ let gymsRepository: InMemoryGymsRepository;
 let sut: CheckInUseCase;
 
 describe('CheckIn Use Case', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     checkInRepository = new InMemoryCheckInRepository();
     gymsRepository = new InMemoryGymsRepository();
     sut = new CheckInUseCase(checkInRepository, gymsRepository);
-    vi.useFakeTimers();
 
-    gymsRepository.items.push({
+    await gymsRepository.create({
       id: 'gym-1',
       title: 'Javascript Gym',
       description: '',
       phone: '1200323',
-      latitude: new Decimal(10000000),
-      longitude: new Decimal(10000000),
+      latitude: 10000000,
+      longitude: 10000000,
     });
+
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
