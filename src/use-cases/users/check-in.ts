@@ -1,4 +1,7 @@
+import { GymNotFoundError } from '@/errors/gym-not-found-error';
 import { InvalidCredentialsError } from '@/errors/invalid-credentials';
+import { MaxDistanceError } from '@/errors/max-distance-error';
+import { MaxNumberOfCheckInsError } from '@/errors/max-number-of-check-ins-error';
 import { CheckInsRepository } from '@/repositories/checkin-repository';
 import { GymsRepository } from '@/repositories/gyms-repository';
 import { UsersRepository } from '@/repositories/users-repository';
@@ -32,7 +35,7 @@ export class CheckInUseCase {
     const gym = await this.gymsRepository.findById(gymId);
 
     if (!gym) {
-      throw new Error();
+      throw new GymNotFoundError();
     }
 
     const distance = getDistanceBetweenCoordinates(
@@ -46,7 +49,7 @@ export class CheckInUseCase {
     const MAX_DISTANCE_IN_KM = 0.1;
 
     if (distance > MAX_DISTANCE_IN_KM) {
-      throw new Error();
+      throw new MaxDistanceError();
     }
 
     const checkInOnSameDay = await this.checkinsRepository.findByUserIdOnDate(
@@ -55,7 +58,7 @@ export class CheckInUseCase {
     );
 
     if (checkInOnSameDay) {
-      throw new Error();
+      throw new MaxNumberOfCheckInsError();
     }
     const checkIn = await this.checkinsRepository.create({
       gym_id: gymId,

@@ -4,6 +4,8 @@ import { CheckInUseCase } from './check-in';
 import { randomUUID } from 'crypto';
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository';
 import { Decimal } from '@prisma/client/runtime/library';
+import { MaxNumberOfCheckInsError } from '@/errors/max-number-of-check-ins-error';
+import { MaxDistanceError } from '@/errors/max-distance-error';
 
 let checkInRepository: InMemoryCheckInRepository;
 let gymsRepository: InMemoryGymsRepository;
@@ -58,7 +60,7 @@ describe('CheckIn Use Case', () => {
         userLatitude: 10000000,
         userLongitude: 1000000,
       }),
-    ).rejects.toBeInstanceOf(Error);
+    ).rejects.toBeInstanceOf(MaxNumberOfCheckInsError);
   });
   it('Should not be able to check in on distant gym', async () => {
     gymsRepository.items.push({
@@ -77,6 +79,6 @@ describe('CheckIn Use Case', () => {
         userLatitude: -10.8386292,
         userLongitude: -37.0781844,
       }),
-    ).rejects.toBeInstanceOf(Error);
+    ).rejects.toBeInstanceOf(MaxDistanceError);
   });
 });
