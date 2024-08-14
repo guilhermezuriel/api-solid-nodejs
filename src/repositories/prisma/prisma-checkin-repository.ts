@@ -20,4 +20,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     const checkIn = await prisma.checkIn.create({ data });
     return checkIn;
   }
+  async findManyByUserId(user_id: string): Promise<CheckIn[]> {
+    throw new Error('Method not implemented.');
+  }
 }
