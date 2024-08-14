@@ -11,6 +11,7 @@ import { compare } from 'bcryptjs';
 
 interface fetchUserCheckInsHistoryCaseRequest {
   userId: string;
+  page: number;
 }
 
 interface fetchUserCheckInsHistoryCaseResponse {
@@ -22,8 +23,12 @@ export class fetchUserCheckInsHistoryCase {
 
   async execute({
     userId,
+    page,
   }: fetchUserCheckInsHistoryCaseRequest): Promise<fetchUserCheckInsHistoryCaseResponse> {
-    const checkIns = await this.checkinsRepository.findManyByUserId(userId);
+    const checkIns = await this.checkinsRepository.findManyByUserId(
+      userId,
+      page,
+    );
     return {
       checkIns,
     };
