@@ -3,9 +3,22 @@ import { UsersRepository } from '../users-repository';
 import { randomUUID } from 'node:crypto';
 import { GymsRepository } from '../gyms-repository';
 import { title } from 'node:process';
+import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coordinates';
 
 export class InMemoryGymsRepository implements GymsRepository {
   public items: Gym[] = [];
+  async findManyNearby(latitude: number, longitude: number): Promise<Gym[]> {
+    return this.items.filter((item) => {
+      const distance = getDistanceBetweenCoordinates(
+        { latitude, longitude },
+        {
+          latitude: item.latitude.toNumber(),
+          longitude: item.longitude.toNumber(),
+        },
+      );
+      return distance < 10;
+    });
+  }
   async searchMany(query: string, page: number): Promise<Gym[]> {
     return this.items
       .filter((item) => item.title.includes(query))
