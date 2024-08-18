@@ -1,25 +1,17 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-import { InMemorygymsRepository } from '@/repositories/in-memory/in-memory-checkins-repository';
-import { CheckInUseCase } from './check-in';
-import { randomUUID } from 'crypto';
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository';
-import { Decimal } from '@prisma/client/runtime/library';
-import { MaxNumberOfCheckInsError } from '@/errors/max-number-of-check-ins-error';
-import { MaxDistanceError } from '@/errors/max-distance-error';
-import { fetchUserCheckInsHistoryCase } from './fetch-user-check-ins-history';
 import { SearchGymsUseCase } from './search-gyms';
-import { title } from 'process';
 
 let gymsRepository: InMemoryGymsRepository;
 let sut: SearchGymsUseCase;
 
-describe('Fetch Check-in User Use Case', () => {
+describe('Search Gyms Use Case', () => {
   beforeEach(async () => {
     gymsRepository = new InMemoryGymsRepository();
     sut = new SearchGymsUseCase(gymsRepository);
   });
 
-  it('Should be able to fetch check-in history', async () => {
+  it('Should be able to search for many gyms', async () => {
     await gymsRepository.create({
       title: 'Javascript-Gym',
       description: 'smart gym',
